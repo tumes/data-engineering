@@ -2,7 +2,7 @@ class PurchaseOrder < ActiveRecord::Base
 
   has_many :line_items
 
-  attr_writer :line_item_data
+  attr_writer :line_item_data, :tab_file
 
   after_create :create_line_items
 
