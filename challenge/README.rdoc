@@ -1,28 +1,10 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is my solution for the LivingSocial software engineer challenge. It includes both my solution and a passing test suite.
 
-Things you may want to cover:
+It uses Ruby 2.1.1 and Rails 4.0.3. It uses Postgres for its database.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+To run:
+    bundle
+    rake db:create
+    rails s
