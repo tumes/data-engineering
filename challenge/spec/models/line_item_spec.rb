@@ -125,4 +125,13 @@ describe LineItem do
       end
     end
   end
+
+  describe "#total_price" do
+    let(:line_item) { LineItem.create(item_description: "$15 for $10", item_price: 15.0, purchase_count: 3) }
+
+    it 'returns the total price for the line item' do
+      expect(line_item.total_price).to eq(45.0)
+    end
+  end
+
 end

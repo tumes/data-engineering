@@ -9,6 +9,10 @@ class LineItem < ActiveRecord::Base
 
   before_create :assign_purchaser, :assign_item, :assign_merchant
 
+  def total_price
+    purchase_count * item.price
+  end
+
   private
 
   def assign_purchaser
