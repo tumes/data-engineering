@@ -6,9 +6,9 @@ describe LineItem do
 
   describe '.create' do
 
-    context 'when all new data is present' do
+    describe 'the base line item' do
       let(:purchase_order) { PurchaseOrder.create }
-      let(:line_item) { LineItem.new(purchase_order: purchase_order, purchase_count: 2, purchaser_name: "Bob Customer" ) }
+      let(:line_item) { LineItem.new(purchase_order: purchase_order, purchase_count: 2) }
 
       it "assigns its purchase order" do
         line_item.save
@@ -19,36 +19,40 @@ describe LineItem do
         line_item.save
         expect(line_item.purchase_count).to eq(2)
       end
-
-      it 'creates a new purchaser' do
-        expect {
-          line_item.save
-        }.to change{ Purchaser.count }.by(1)
-      end
-
-      it 'assigns its purchaser' do
-        line_item.save
-        expect(line_item.purchaser).to eq(Purchaser.where(name: "Bob Customer").first)
-      end
-
     end
 
-    context 'when there is pre-exisitng data' do
-      let!(:purchaser) { Purchaser.create(name: 'Big Spender') }
-      let(:line_item) { LineItem.new(purchaser_name: "Big Spender" ) }
+    describe "the line item's purchaser" do
 
-      it 'does not create a new purchaser' do
-        expect {
+      context 'when the purchaser does not already exist' do
+        let(:line_item) { LineItem.new(purchaser_name: "Bob Customer") }
+
+        it 'creates a new purchaser' do
+          expect {
+            line_item.save
+          }.to change{ Purchaser.count }.by(1)
+        end
+
+        it 'assigns its purchaser' do
           line_item.save
-        }.to_not change{ Purchaser.count }
+          expect(line_item.purchaser).to eq(Purchaser.where(name: "Bob Customer").first)
+        end
       end
 
-      it 'assigns its purchaser' do
-        line_item.save
-        expect(line_item.purchaser).to eq(Purchaser.where(name: "Big Spender").first)
+      context 'when the purchaser does already exist' do
+        let!(:purchaser) { Purchaser.create(name: "Bob Customer") }
+        let(:line_item) { LineItem.new(purchaser_name: "Bob Customer") }
+
+        it 'does not create a new purchaser' do
+          expect {
+            line_item.save
+          }.to_not change{ Purchaser.count }
+        end
+
+        it 'assigns its purchaser' do
+          line_item.save
+          expect(line_item.purchaser).to eq(purchaser)
+        end
       end
     end
-
   end
-
 end
