@@ -4,6 +4,7 @@ describe LineItem do
 
   it { should belong_to(:purchaser) }
   it { should belong_to(:item) }
+  it { should belong_to(:merchant) }
 
   describe '.create' do
 
@@ -86,6 +87,40 @@ describe LineItem do
         it 'assigns its item' do
           line_item.save
           expect(line_item.item).to eq(item)
+        end
+      end
+    end
+
+    describe "the line item's merchant" do
+
+      context 'when the merchant does not already exist' do
+        let(:line_item) { LineItem.new(merchant_name: "Bluth Bananas", merchant_address: "Oceanside Wharf") }
+
+        it 'creates a new merchant' do
+          expect {
+            line_item.save
+          }.to change{ Merchant.count }.by(1)
+        end
+
+        it 'assigns its merchant' do
+          line_item.save
+          expect(line_item.merchant).to eq(Merchant.where(name: "Bluth Bananas").first)
+        end
+      end
+
+      context 'when the merchant does already exist' do
+        let!(:merchant) { Merchant.create(name: "Sitwell Enterprises", address: "California") }
+        let(:line_item) { LineItem.new(merchant_name: "Sitwell Enterprises", merchant_address: "California") }
+
+        it 'does not create a new merchant' do
+          expect {
+            line_item.save
+          }.to_not change{ Merchant.count }
+        end
+
+        it 'assigns its item' do
+          line_item.save
+          expect(line_item.merchant).to eq(merchant)
         end
       end
     end
