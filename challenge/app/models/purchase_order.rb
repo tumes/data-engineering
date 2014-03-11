@@ -4,7 +4,11 @@ class PurchaseOrder < ActiveRecord::Base
 
   attr_writer :line_item_data
 
-  before_create :create_line_items
+  after_create :create_line_items
+
+  def total_price
+    line_items.reduce(0){ |sum, li| li.total_price + sum }
+  end
 
   private
 
@@ -12,7 +16,7 @@ class PurchaseOrder < ActiveRecord::Base
     @line_item_data ||= []
 
     @line_item_data.each do |li|
-      LineItem.create(purchaser_name: li[0], item_description: li[1], item_price: li[2], purchase_count: li[3], merchant_address: li[4], merchant_name: li[5])
+      LineItem.create(purchase_order: self, purchaser_name: li[0], item_description: li[1], item_price: li[2], purchase_count: li[3], merchant_address: li[4], merchant_name: li[5])
     end
   end
 
