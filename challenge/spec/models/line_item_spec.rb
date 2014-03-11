@@ -3,6 +3,7 @@ require 'spec_helper'
 describe LineItem do
 
   it { should belong_to(:purchaser) }
+  it { should belong_to(:item) }
 
   describe '.create' do
 
@@ -51,6 +52,40 @@ describe LineItem do
         it 'assigns its purchaser' do
           line_item.save
           expect(line_item.purchaser).to eq(purchaser)
+        end
+      end
+    end
+
+    describe "the line item's item" do
+
+      context 'when the item does not already exist' do
+        let(:line_item) { LineItem.new(item_description: "$2 for $1", item_price: 1.0) }
+
+        it 'creates a new item' do
+          expect {
+            line_item.save
+          }.to change{ Item.count }.by(1)
+        end
+
+        it 'assigns its item' do
+          line_item.save
+          expect(line_item.item).to eq(Item.where(description: "$2 for $1").first)
+        end
+      end
+
+      context 'when the item does already exist' do
+        let!(:item) { Item.create(description: "$10 for $5", price: 5.0) }
+        let(:line_item) { LineItem.new(item_description: "$10 for $5", item_price: 5.0) }
+
+        it 'does not create a new item' do
+          expect {
+            line_item.save
+          }.to_not change{ Item.count }
+        end
+
+        it 'assigns its item' do
+          line_item.save
+          expect(line_item.item).to eq(item)
         end
       end
     end
