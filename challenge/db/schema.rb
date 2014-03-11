@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311191700) do
+ActiveRecord::Schema.define(version: 20140311192738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "line_items", force: true do |t|
+    t.integer  "purchase_order_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_items", ["purchase_order_id"], name: "index_line_items_on_purchase_order_id", using: :btree
 
   create_table "purchase_orders", force: true do |t|
     t.datetime "created_at"
